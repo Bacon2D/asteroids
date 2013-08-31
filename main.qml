@@ -20,7 +20,7 @@ QuasiGame {
 
         gravity: Qt.point(0, 0)
 
-        property int numberOfAsteroids: 3
+        property int numberOfAsteroids: 3 + Math.floor(root.currentLevel * 0.5)
 
         Rectangle {
             id: background
@@ -36,13 +36,29 @@ QuasiGame {
                 id: asteroid
 
                 property variant center: Qt.point(x + width / 2, y + height / 2)
-                property double maxImpulse: 9 + root.currentLevel;
+                property double maxImpulse: 1000 + root.currentLevel;
                 property double maxAngularVelocity: 0.1 + (root.currentLevel * 0.1);
 
                 width: asteroidImage.width
                 height: asteroidImage.height
 
                 entityType: Quasi.DynamicType
+
+                QuasiFixture {
+                    anchors.fill: parent
+                    material: asteroidMaterial
+                    shape: QuasiCircle {
+                        anchors.fill: parent
+                    }
+                }
+
+                QuasiMaterial {
+                    id: asteroidMaterial
+
+                    friction: 0.3
+                    density: 5
+                    restitution: 0.5
+                }
 
                 Image {
                     id: asteroidImage
