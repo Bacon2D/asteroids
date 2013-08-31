@@ -36,7 +36,7 @@ QuasiGame {
                 id: asteroid
 
                 property variant center: Qt.point(x + width / 2, y + height / 2)
-                property double maxImpulse: 5 + (root.currentLevel * 0.2);
+                property double maxImpulse: 9 + root.currentLevel;
                 property double maxAngularVelocity: 0.1 + (root.currentLevel * 0.1);
 
                 width: asteroidImage.width
@@ -74,6 +74,27 @@ QuasiGame {
                 function setRandomAngularVelocity() {
                     setAngularVelocity(randomAngularVelocity());
                 }
+
+                function keepInsideView() {
+                    // vertical swap
+                    if ((asteroid.y + asteroid.height) < 0)
+                        asteroid.y = gameScene.height;
+                    if (asteroid.y > gameScene.height)
+                        asteroid.y = -asteroid.height;
+
+                    // horizontal swap
+                    if (asteroid.x > gameScene.width)
+                        asteroid.x = -asteroid.width
+                    if ((asteroid.x + asteroid.width) < 0)
+                        asteroid.x = gameScene.width
+                }
+
+                behavior: QuasiScriptBehavior {
+                    script: {
+                        entity.keepInsideView();
+                    }
+                }
+
             }
         }
 
