@@ -29,6 +29,34 @@ QuasiGame {
             anchors.fill: parent
         }
 
+        Image {
+            id: backgroundStars
+
+            anchors.fill: parent
+            source: "images/background_stars.png"
+            fillMode: Image.Tile
+        }
+
+        QuasiSprite {
+            id: shipSprite
+
+            animation: "thrusting"
+            x: gameScene.width / 2.0 - shipSprite.width / 2.0
+            y: gameScene.height / 2.0 - shipSprite.height / 2.0
+
+            animations: [
+                QuasiSpriteAnimation {
+                    name: "thrusting"
+
+                    source: "images/ship_sprite.png"
+                    frames: 4
+                    duration: 500
+                    loops: Animation.Infinite
+                }
+            ]
+        }
+ 
+
         Component {
             id: asteroidSpriteComponent
 
