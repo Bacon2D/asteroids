@@ -14,6 +14,8 @@ QuasiGame {
     QuasiScene {
         id: gameScene
 
+        focus: true
+
         debug: true
 
         anchors.fill: parent
@@ -21,6 +23,32 @@ QuasiGame {
         gravity: Qt.point(0, 0)
 
         property int numberOfAsteroids: 3 + Math.floor(root.currentLevel * 0.5)
+        property bool isUpPressed: false
+        property bool isDownPressed: false
+        property bool isLeftPressed: false
+        property bool isRightPressed: false
+
+        Keys.onUpPressed: isUpPressed = true
+        Keys.onDownPressed: isDownPressed = true
+        Keys.onLeftPressed: isLeftPressed = true
+        Keys.onRightPressed: isRightPressed = true
+
+        Keys.onReleased: {
+            switch (event.key) {
+            case Qt.Key_Up:
+                isUpPressed = false
+                break
+            case Qt.Key_Down:
+                isDownPressed = false
+                break
+            case Qt.Key_Left:
+                isLeftPressed = false
+                break
+            case Qt.Key_Right:
+                isRightPressed = false
+                break
+            }
+        }
 
         Rectangle {
             id: background
@@ -37,25 +65,89 @@ QuasiGame {
             fillMode: Image.Tile
         }
 
-        QuasiSprite {
-            id: shipSprite
+        QuasiScriptBehavior {
+            id: keepInsideViewBehavior
 
-            animation: "thrusting"
-            x: gameScene.width / 2.0 - shipSprite.width / 2.0
-            y: gameScene.height / 2.0 - shipSprite.height / 2.0
+            script: {
+                keepInsideView(entity);
+            }
 
-            animations: [
-                QuasiSpriteAnimation {
-                    name: "thrusting"
+            function keepInsideView(entity) {
+                // vertical swap
+                if ((entity.y + entity.height) < 0)
+                    entity.y = gameScene.height;
+                if (entity.y > gameScene.height)
+                    entity.y = -entity.height;
 
-                    source: "images/ship_sprite.png"
-                    frames: 4
-                    duration: 500
-                    loops: Animation.Infinite
-                }
-            ]
+                // horizontal swap
+                if (entity.x > gameScene.width)
+                    entity.x = -entity.width
+                if ((entity.x + entity.width) < 0)
+                    entity.x = gameScene.width
+            }
         }
- 
+
+        QuasiScriptBehavior {
+            id: shipBehavior
+
+            script: {
+                keepInsideViewBehavior.keepInsideView(entity)
+
+                if (gameScene.isUpPressed) {
+                    /*var heading = rotateVector(entity, entity.heading)
+                    entity.applyLinearImpulse(heading, entity.center)
+                    */
+                }
+            }
+        }
+
+        QuasiEntity {
+            id: ship
+
+            width: shipSprite.width
+            height: shipSprite.height
+            x: gameScene.width / 2.0 - ship.width / 2.0
+            y: gameScene.height / 2.0 - ship.height / 2.0
+            property variant center: Qt.point(x + width / 2, y + height / 2)
+
+            entityType: Quasi.DynamicType
+
+            behavior: shipBehavior
+
+            QuasiFixture {
+                anchors.fill: parent
+                material: shipMaterial
+                shape: QuasiRectangle {
+                    anchors.fill: parent
+                }
+            }
+
+            QuasiMaterial {
+                id: shipMaterial
+
+                friction: 0.3
+                density: 3
+                restitution: 0.5
+            }
+
+            QuasiSprite {
+                id: shipSprite
+
+                animation: "thrusting"
+
+                animations: [
+                    QuasiSpriteAnimation {
+                        name: "thrusting"
+
+                        source: "images/ship_sprite.png"
+                        frames: 4
+                        duration: 500
+                        loops: Animation.Infinite
+                    }
+                ]
+            }
+        }
+
 
         Component {
             id: asteroidSpriteComponent
@@ -119,26 +211,7 @@ QuasiGame {
                     setAngularVelocity(randomAngularVelocity());
                 }
 
-                function keepInsideView() {
-                    // vertical swap
-                    if ((asteroid.y + asteroid.height) < 0)
-                        asteroid.y = gameScene.height;
-                    if (asteroid.y > gameScene.height)
-                        asteroid.y = -asteroid.height;
-
-                    // horizontal swap
-                    if (asteroid.x > gameScene.width)
-                        asteroid.x = -asteroid.width
-                    if ((asteroid.x + asteroid.width) < 0)
-                        asteroid.x = gameScene.width
-                }
-
-                behavior: QuasiScriptBehavior {
-                    script: {
-                        entity.keepInsideView();
-                    }
-                }
-
+                behavior: keepInsideViewBehavior
             }
         }
 
