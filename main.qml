@@ -262,6 +262,8 @@ QuasiGame {
 
                 entityType: Quasi.DynamicType
 
+                behavior: keepInsideViewBehavior
+
                 QuasiFixture {
                     anchors.fill: parent
                     material: asteroidMaterial
@@ -281,6 +283,26 @@ QuasiGame {
                 Image {
                     id: asteroidImage
                     source: "images/asteroid-" + Math.ceil((Math.random() * 5) + 1) + ".png"
+                }
+
+                QuasiSprite {
+                    id: explosionAnimation
+                    
+                    visible: false
+
+                    animation: "explosion"
+
+                    anchors.centerIn: parent
+
+                    animations: QuasiSpriteAnimation {
+                        running: false
+                        name: "explosion"
+                        source: "images/explosion.png"
+                        frames: 4
+                        duration: 400
+
+                        onFinished: explosionAnimation.visible = false
+                    }
                 }
 
                 Component.onCompleted: {
@@ -310,9 +332,9 @@ QuasiGame {
                 }
 
                 function damage() {
+                    explosionAnimation.visible = true;
+                    explosionAnimation.initializeAnimation();
                 }
-
-                behavior: keepInsideViewBehavior
             }
         }
 
