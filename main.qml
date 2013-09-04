@@ -32,6 +32,7 @@ QuasiGame {
         Keys.onDownPressed: isDownPressed = true
         Keys.onLeftPressed: isLeftPressed = true
         Keys.onRightPressed: isRightPressed = true
+        Keys.onSpacePressed: ship.fire();
 
         Keys.onReleased: {
             switch (event.key) {
@@ -96,11 +97,8 @@ QuasiGame {
                 if (gameScene.isUpPressed || gameScene.isDownPressed) {
                     var heading = Qt.point(gameScene.isUpPressed ? 10 : -10, 0);
                     var angle = entity.rotation * Math.PI / 180.0;
+                    var rotatedHeading = gameScene.rotatePoint(heading, angle);
 
-                    var rotatedHeading = Qt.point((heading.x * Math.cos(angle)) - (heading.y * Math.sin(angle)),
-                                                  (heading.x * Math.sin(angle)) + (heading.y * Math.cos(angle)));
-
-                    console.log(entity.center.x, entity.center.y, rotatedHeading.x, rotatedHeading.y);
                     entity.applyLinearImpulse(rotatedHeading, entity.center);
                 }
 
@@ -109,6 +107,49 @@ QuasiGame {
                     entity.setAngularVelocity(rotationSpeed);
                 } else if (!gameScene.isLeftPressed && !gameScene.isRightPressed)
                     entity.setAngularVelocity(0);
+            }
+        }
+
+        Component {
+            id: bulletComponent
+
+            QuasiEntity {
+                id: bullet
+
+                property variant center: Qt.point(x + width / 2, y + height / 2)
+
+                width: 5
+                height: 5
+
+                entityType: Quasi.DynamicType
+
+                behavior: keepInsideViewBehavior
+
+                QuasiFixture {
+                    anchors.fill: parent
+
+                    material: QuasiMaterial {
+                        friction: 0.3
+                        density: 3
+                        restitution: 0.5
+                    }
+
+                    shape: QuasiCircle {
+                        anchors.fill: parent
+                        fill: QuasiColorFill {
+                            brushColor: "red"
+                        }
+                    }
+                }
+
+                Timer {
+                    running: true
+                    interval: 1000
+                    triggeredOnStart: false
+                    repeat: false
+
+                    onTriggered: bullet.destroy()
+                }
             }
         }
 
@@ -128,6 +169,7 @@ QuasiGame {
             QuasiFixture {
                 anchors.fill: parent
                 material: shipMaterial
+
                 shape: QuasiRectangle {
                     anchors.fill: parent
                 }
@@ -156,6 +198,21 @@ QuasiGame {
                         loops: Animation.Infinite
                     }
                 ]
+            }
+
+            function fire() {
+                var originPoint = Qt.point(ship.width / 2.0, 0);
+
+                var angle = ship.rotation * Math.PI / 180.0;
+                var rotatedOrigin = gameScene.rotatePoint(originPoint, angle);
+
+                console.log(rotatedOrigin.x, rotatedOrigin.y)
+
+                var bulletObject = bulletComponent.createObject(gameScene);
+                bulletObject.x = ship.center.x + rotatedOrigin.x
+                bulletObject.y = ship.center.y + rotatedOrigin.y
+
+                bulletObject.applyLinearImpulse(rotatedOrigin, bulletObject.center)
             }
         }
 
@@ -224,6 +281,13 @@ QuasiGame {
 
                 behavior: keepInsideViewBehavior
             }
+        }
+
+        function rotatePoint(point, angle) {
+            var rotatedPoint = Qt.point((point.x * Math.cos(angle)) - (point.y * Math.sin(angle)),
+                                        (point.x * Math.sin(angle)) + (point.y * Math.cos(angle)));
+
+            return rotatedPoint;
         }
 
         Component.onCompleted: {
