@@ -137,7 +137,7 @@ QuasiGame {
                     shape: QuasiCircle {
                         anchors.fill: parent
                         fill: QuasiColorFill {
-                            brushColor: "red"
+                            brushColor: "yellow"
                         }
                     }
                 }
