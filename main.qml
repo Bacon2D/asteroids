@@ -103,6 +103,12 @@ QuasiGame {
                     console.log(entity.center.x, entity.center.y, rotatedHeading.x, rotatedHeading.y);
                     entity.applyLinearImpulse(rotatedHeading, entity.center);
                 }
+
+                if (gameScene.isLeftPressed || gameScene.isRightPressed) {
+                    var rotationSpeed = gameScene.isRightPressed ? -1 : 1;
+                    entity.setAngularVelocity(rotationSpeed);
+                } else if (!gameScene.isLeftPressed && !gameScene.isRightPressed)
+                    entity.setAngularVelocity(0);
             }
         }
 
