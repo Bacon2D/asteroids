@@ -16,7 +16,7 @@ QuasiGame {
 
         focus: true
 
-        debug: true
+        debug: false
 
         anchors.fill: parent
 
@@ -49,6 +49,13 @@ QuasiGame {
                 isRightPressed = false
                 break
             }
+        }
+
+        onContactEnd: {
+            var entityA = contact.fixtureA.entity
+            var entityB = contact.fixtureB.entity
+
+            console.log(entityA.objectName, entityB.objectName)
         }
 
         Rectangle {
@@ -118,6 +125,8 @@ QuasiGame {
 
                 property variant center: Qt.point(x + width / 2, y + height / 2)
 
+                objectName: "bullet"
+
                 width: 5
                 height: 5
 
@@ -155,6 +164,8 @@ QuasiGame {
 
         QuasiEntity {
             id: ship
+
+            objectName: "ship"
 
             width: shipSprite.width
             height: shipSprite.height
@@ -222,6 +233,8 @@ QuasiGame {
 
             QuasiEntity {
                 id: asteroid
+
+                objectName: "asteroid"
 
                 property variant center: Qt.point(x + width / 2, y + height / 2)
                 property double maxImpulse: 1000 + root.currentLevel;
