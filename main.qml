@@ -51,7 +51,7 @@ QuasiGame {
             }
         }
 
-        onContactEnd: {
+        onContactPostSolve: {
             var entityA = contact.fixtureA.entity
             var entityB = contact.fixtureB.entity
 
@@ -246,11 +246,30 @@ QuasiGame {
 
 
         Component {
-            id: asteroidSpriteComponent
+            id: asteroidSpriteComponentL1
 
             Asteroid {
                 id: asteroid
 
+                maxImpulse: 1000
+                maxAngularVelocity: 0.1
+
+                splitLevel: 1
+                childAsteroid: asteroidSpriteComponentL2
+                behavior: keepInsideViewBehavior
+            }
+        }
+
+        Component {
+            id: asteroidSpriteComponentL2
+
+            Asteroid {
+                id: asteroid
+
+                maxImpulse: 500
+                maxAngularVelocity: 0.1
+
+                splitLevel: 2
                 behavior: keepInsideViewBehavior
             }
         }
@@ -263,12 +282,12 @@ QuasiGame {
         }
 
         Component.onCompleted: {
-            var spriteObject;
+            var asteroidObject;
 
             for (var i = 0; i < gameScene.numberOfAsteroids; i++) {
-                spriteObject = asteroidSpriteComponent.createObject(gameScene);
-                spriteObject.x = Math.random() * root.width;
-                spriteObject.y = Math.random() * root.height;
+                asteroidObject = asteroidSpriteComponentL1.createObject(gameScene);
+                asteroidObject.x = Math.random() * root.width;
+                asteroidObject.y = Math.random() * root.height;
             }
         }
     }

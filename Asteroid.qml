@@ -7,9 +7,12 @@ QuasiEntity {
     objectName: "asteroid"
 
     property variant center: Qt.point(x + width / 2, y + height / 2)
-    property double maxImpulse: 1000 + root.currentLevel;
-    property double maxAngularVelocity: 0.1 + (root.currentLevel * 0.1);
+    property double maxImpulse: 1000
+    property double maxAngularVelocity: 0.1
     property int splitLevel: 1
+    property variant childAsteroid
+
+    signal exploded();
 
     width: asteroidImage.width
     height: asteroidImage.height
@@ -83,8 +86,34 @@ QuasiEntity {
         setAngularVelocity(randomAngularVelocity());
     }
 
+    function createChild(component)
+    {
+        var asteroidObject = component.createObject(gameScene);
+        asteroidObject.x = asteroid.x + Math.random() * asteroid.width;
+        asteroidObject.y = asteroid.y + Math.random() * asteroid.height;
+    }
+
+    function createChildren(component) {
+        createChild(component);
+        createChild(component);
+        asteroid.destroy();
+    }
+
     function damage() {
         explosionAnimation.visible = true;
         explosionAnimation.initializeAnimation();
+        explodeTimer.start();
+    }
+
+    Timer {
+        id: explodeTimer
+
+        interval: 400
+        running: false
+        onTriggered: {
+            if (asteroid.childAsteroid != undefined)
+                createChildren(asteroid.childAsteroid)
+            asteroid.destroy();
+        }
     }
 }
