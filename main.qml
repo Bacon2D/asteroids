@@ -93,10 +93,15 @@ QuasiGame {
             script: {
                 keepInsideViewBehavior.keepInsideView(entity)
 
-                if (gameScene.isUpPressed) {
-                    /*var heading = rotateVector(entity, entity.heading)
-                    entity.applyLinearImpulse(heading, entity.center)
-                    */
+                if (gameScene.isUpPressed || gameScene.isDownPressed) {
+                    var heading = Qt.point(gameScene.isUpPressed ? 10 : -10, 0);
+                    var angle = entity.rotation * Math.PI / 180.0;
+
+                    var rotatedHeading = Qt.point((heading.x * Math.cos(angle)) - (heading.y * Math.sin(angle)),
+                                                  (heading.x * Math.sin(angle)) + (heading.y * Math.cos(angle)));
+
+                    console.log(entity.center.x, entity.center.y, rotatedHeading.x, rotatedHeading.y);
+                    entity.applyLinearImpulse(rotatedHeading, entity.center);
                 }
             }
         }
