@@ -55,6 +55,23 @@ QuasiGame {
             var entityA = contact.fixtureA.entity
             var entityB = contact.fixtureB.entity
 
+            if (entityA.objectName == "asteroid" || entityB.objectName == "asteroid") {
+                var asteroidObject
+                if (entityA.objectName == "bullet" || entityB.objectName == "bullet") {
+                    var bulletObject;
+                    if (entityA.objectName == "bullet") {
+                        asteroidObject = entityB;
+                        bulletObject = entityA;
+                    } else {
+                        asteroidObject = entityA;
+                        bulletObject = entityB;
+                    }
+
+                    bulletObject.destroy();
+                    asteroidObject.damage();
+                }
+            }
+
             console.log(entityA.objectName, entityB.objectName)
         }
 
@@ -290,6 +307,9 @@ QuasiGame {
 
                 function setRandomAngularVelocity() {
                     setAngularVelocity(randomAngularVelocity());
+                }
+
+                function damage() {
                 }
 
                 behavior: keepInsideViewBehavior
