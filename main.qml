@@ -5,12 +5,64 @@ QuasiGame {
     id: root
 
     property int currentLevel: 1
+    property int bigFontSize: root.width / 20.0
 
     width: 800
     height: 600
 
     currentScene: gameScene
 
+    FontLoader { id: dPuntillasFont; source: "fonts/d-puntillas-D-to-tiptoe.ttf" }
+
+    QuasiScene {
+        id: levelCompletedScene
+
+        anchors.fill: parent
+
+        Rectangle {
+            color: "black"
+            anchors.fill: parent
+        }
+
+        Text {
+            id: levelCompletedText
+
+            color: "white"
+
+            font.family: dPuntillasFont.name
+            font.pointSize: root.bigFontSize
+
+            anchors.horizontalCenter: parent.horizontalCenter
+
+            text: "Level completed!"
+        }
+    }
+
+    QuasiScene {
+        id: gameOverScene
+
+        anchors.fill: parent
+
+        Rectangle {
+            color: "black"
+            anchors.fill: parent
+        }
+
+        Text {
+            id: gameOverText
+
+            color: "white"
+
+            font.family: dPuntillasFont.name
+            font.pointSize: root.bigFontSize
+
+            anchors.horizontalCenter: parent.horizontalCenter
+
+            text: "Game over!"
+        }
+    }
+
+ 
     QuasiScene {
         id: gameScene
 
@@ -76,7 +128,11 @@ QuasiGame {
             console.log(entityA.objectName, entityB.objectName)
         }
 
-        onTotalAsteroidsChanged: console.log("Total asteroids:", gameScene.totalAsteroids)
+        onTotalAsteroidsChanged: {
+            console.log("Total asteroids:", gameScene.totalAsteroids)
+            if (gameScene.totalAsteroids == 0)
+                game.currentScene = levelCompletedScene
+        }
 
         Rectangle {
             id: background
