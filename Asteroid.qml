@@ -12,7 +12,8 @@ QuasiEntity {
     property int splitLevel: 1
     property variant childAsteroid
 
-    signal exploded();
+    signal asteroidCreated();
+    signal asteroidDestroyed();
 
     width: asteroidImage.width
     height: asteroidImage.height
@@ -61,6 +62,7 @@ QuasiEntity {
     }
 
     Component.onCompleted: {
+        asteroidCreated();
         applyRandomImpulse();
         setRandomAngularVelocity();
     }
@@ -96,6 +98,7 @@ QuasiEntity {
     function createChildren(component) {
         createChild(component);
         createChild(component);
+        asteroidDestroyed();
         asteroid.destroy();
     }
 

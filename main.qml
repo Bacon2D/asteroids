@@ -23,6 +23,7 @@ QuasiGame {
         gravity: Qt.point(0, 0)
 
         property int numberOfAsteroids: 3 + Math.floor(root.currentLevel * 0.5)
+        property int totalAsteroids: 0
         property bool isUpPressed: false
         property bool isDownPressed: false
         property bool isLeftPressed: false
@@ -74,6 +75,8 @@ QuasiGame {
 
             console.log(entityA.objectName, entityB.objectName)
         }
+
+        onTotalAsteroidsChanged: console.log("Total asteroids:", gameScene.totalAsteroids)
 
         Rectangle {
             id: background
@@ -257,6 +260,8 @@ QuasiGame {
                 splitLevel: 1
                 childAsteroid: asteroidSpriteComponentL2
                 behavior: keepInsideViewBehavior
+                onAsteroidCreated: gameScene.totalAsteroids += 1
+                onAsteroidDestroyed: gameScene.totalAsteroids -= 1
             }
         }
 
@@ -272,6 +277,8 @@ QuasiGame {
                 splitLevel: 2
                 childAsteroid: asteroidSpriteComponentL3
                 behavior: keepInsideViewBehavior
+                onAsteroidCreated: gameScene.totalAsteroids += 1
+                onAsteroidDestroyed: gameScene.totalAsteroids -= 1
             }
         }
 
@@ -286,6 +293,8 @@ QuasiGame {
 
                 splitLevel: 3
                 behavior: keepInsideViewBehavior
+                onAsteroidCreated: gameScene.totalAsteroids += 1
+                onAsteroidDestroyed: gameScene.totalAsteroids -= 1
             }
         }
 
@@ -301,8 +310,8 @@ QuasiGame {
 
             for (var i = 0; i < gameScene.numberOfAsteroids; i++) {
                 asteroidObject = asteroidSpriteComponentL1.createObject(gameScene);
-                asteroidObject.x = Math.random() * root.width;
-                asteroidObject.y = Math.random() * root.height;
+                asteroidObject.x = Math.random() * gameScene.width;
+                asteroidObject.y = Math.random() * gameScene.height;
             }
         }
     }
