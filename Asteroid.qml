@@ -98,8 +98,6 @@ QuasiEntity {
     function createChildren(component) {
         createChild(component);
         createChild(component);
-        asteroidDestroyed();
-        asteroid.destroy();
     }
 
     function damage() {
@@ -116,6 +114,7 @@ QuasiEntity {
         onTriggered: {
             if (asteroid.childAsteroid != undefined)
                 createChildren(asteroid.childAsteroid)
+            asteroidDestroyed();
             asteroid.destroy();
         }
     }
