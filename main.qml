@@ -225,7 +225,7 @@ QuasiGame {
 
                         source: "images/ship_sprite.png"
                         frames: 4
-                        duration: 500
+                        duration: gameScene.isUpPressed ? 200 : 500
                         loops: Animation.Infinite
                     }
                 ]
