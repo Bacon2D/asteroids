@@ -232,7 +232,7 @@ QuasiGame {
             }
 
             function fire() {
-                var originPoint = Qt.point(ship.width / 2.0, 0);
+                var originPoint = Qt.point(ship.width / 2.0 + 5, 0);
 
                 var angle = ship.rotation * Math.PI / 180.0;
                 var rotatedOrigin = gameScene.rotatePoint(originPoint, angle);
