@@ -266,10 +266,25 @@ QuasiGame {
             Asteroid {
                 id: asteroid
 
-                maxImpulse: 500
+                maxImpulse: 400
                 maxAngularVelocity: 0.1
 
                 splitLevel: 2
+                childAsteroid: asteroidSpriteComponentL3
+                behavior: keepInsideViewBehavior
+            }
+        }
+
+        Component {
+            id: asteroidSpriteComponentL3
+
+            Asteroid {
+                id: asteroid
+
+                maxImpulse: 100
+                maxAngularVelocity: 0.1
+
+                splitLevel: 3
                 behavior: keepInsideViewBehavior
             }
         }
