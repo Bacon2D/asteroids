@@ -1,7 +1,7 @@
-import QtQuick 1.1
-import QuasiGame 1.0
+import QtQuick 2.0
+import Bacon2D 1.0
 
-QuasiGame {
+Game {
     id: root
 
     property int currentLevel: 1
@@ -14,7 +14,7 @@ QuasiGame {
 
     FontLoader { id: dPuntillasFont; source: "fonts/d-puntillas-D-to-tiptoe.ttf" }
 
-    QuasiScene {
+    Scene {
         id: levelCompletedScene
 
         anchors.fill: parent
@@ -38,7 +38,7 @@ QuasiGame {
         }
     }
 
-    QuasiScene {
+    Scene {
         id: gameOverScene
 
         anchors.fill: parent
@@ -63,7 +63,7 @@ QuasiGame {
     }
 
  
-    QuasiScene {
+    Scene {
         id: gameScene
 
         focus: true
@@ -149,7 +149,7 @@ QuasiGame {
             fillMode: Image.Tile
         }
 
-        QuasiScriptBehavior {
+        ScriptBehavior {
             id: keepInsideViewBehavior
 
             script: {
@@ -171,7 +171,7 @@ QuasiGame {
             }
         }
 
-        QuasiScriptBehavior {
+        ScriptBehavior {
             id: shipBehavior
 
             script: {
@@ -196,7 +196,7 @@ QuasiGame {
         Component {
             id: bulletComponent
 
-            QuasiEntity {
+            Entity {
                 id: bullet
 
                 property variant center: Qt.point(x + width / 2, y + height / 2)
@@ -206,22 +206,22 @@ QuasiGame {
                 width: 5
                 height: 5
 
-                entityType: Quasi.DynamicType
+                entityType: Bacon2D.DynamicType
 
                 behavior: keepInsideViewBehavior
 
-                QuasiFixture {
+                Fixture {
                     anchors.fill: parent
 
-                    material: QuasiMaterial {
+                    material: Material {
                         friction: 0.3
                         density: 3
                         restitution: 0.5
                     }
 
-                    shape: QuasiCircle {
+                    shape: Circle {
                         anchors.fill: parent
-                        fill: QuasiColorFill {
+                        fill: ColorFill {
                             brushColor: "yellow"
                         }
                     }
@@ -238,7 +238,7 @@ QuasiGame {
             }
         }
 
-        QuasiEntity {
+        Entity {
             id: ship
 
             objectName: "ship"
@@ -249,20 +249,20 @@ QuasiGame {
             y: gameScene.height / 2.0 - ship.height / 2.0
             property variant center: Qt.point(x + width / 2, y + height / 2)
 
-            entityType: Quasi.DynamicType
+            entityType: Bacon2D.DynamicType
 
             behavior: shipBehavior
 
-            QuasiFixture {
+            Fixture {
                 anchors.fill: parent
                 material: shipMaterial
 
-                shape: QuasiRectangle {
+                shape: Box {
                     anchors.fill: parent
                 }
             }
 
-            QuasiMaterial {
+            Material {
                 id: shipMaterial
 
                 friction: 0.3
@@ -270,13 +270,13 @@ QuasiGame {
                 restitution: 0.5
             }
 
-            QuasiSprite {
+            Sprite {
                 id: shipSprite
 
                 animation: "thrusting"
 
                 animations: [
-                    QuasiSpriteAnimation {
+                    SpriteAnimation {
                         name: "thrusting"
 
                         source: "images/ship_sprite.png"

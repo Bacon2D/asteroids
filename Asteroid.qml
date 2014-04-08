@@ -1,7 +1,7 @@
-import QtQuick 1.1
-import QuasiGame 1.0
+import QtQuick 2.0
+import Bacon2D 1.0
 
-QuasiEntity {
+Entity {
     id: asteroid
 
     objectName: "asteroid"
@@ -18,17 +18,17 @@ QuasiEntity {
     width: asteroidImage.width
     height: asteroidImage.height
 
-    entityType: Quasi.DynamicType
+    entityType: Bacon2D.DynamicType
 
-    QuasiFixture {
+    Fixture {
         anchors.fill: parent
         material: asteroidMaterial
-        shape: QuasiCircle {
+        shape: Circle {
             anchors.fill: parent
         }
     }
 
-    QuasiMaterial {
+    Material {
         id: asteroidMaterial
 
         friction: 0.3
@@ -41,7 +41,7 @@ QuasiEntity {
         source: "images/asteroid-s"+ asteroid.splitLevel + "-" + Math.ceil((Math.random() * 5) + 1) + ".png"
     }
 
-    QuasiSprite {
+    Sprite {
         id: explosionAnimation
 
         visible: false
@@ -50,7 +50,7 @@ QuasiEntity {
 
         anchors.centerIn: parent
 
-        animations: QuasiSpriteAnimation {
+        animations: SpriteAnimation {
             running: false
             name: "explosion"
             source: "images/explosion.png"
