@@ -4,19 +4,18 @@ import Bacon2D 1.0
 Game {
     id: root
 
-    property int currentLevel: 1
+    property int currentLevel: 0
     property int bigFontSize: root.width / 20.0
 
     width: 800
     height: 600
 
-    currentScene: gameScene
+    currentScene: levelCompletedScene
 
     FontLoader { id: dPuntillasFont; source: "fonts/d-puntillas-D-to-tiptoe.ttf" }
 
     Scene {
         id: levelCompletedScene
-
         anchors.fill: parent
 
         Rectangle {
@@ -24,23 +23,41 @@ Game {
             anchors.fill: parent
         }
 
-        Text {
-            id: levelCompletedText
+        Column {
+            anchors.centerIn: parent
+            Text {
+                id: levelCompletedText
+                anchors.horizontalCenter: parent.horizontalCenter
+                color: "white"
+                font.family: dPuntillasFont.name
+                font.pointSize: root.bigFontSize
+                visible: root.currentLevel > 0
+                text: "Level " + root.currentLevel + " completed!"
+            }
 
-            color: "white"
+            Text {
+                id: startNextText
+                anchors.horizontalCenter: parent.horizontalCenter
+                color: "white"
+                font.family: dPuntillasFont.name
+                font.pointSize: root.bigFontSize
 
-            font.family: dPuntillasFont.name
-            font.pointSize: root.bigFontSize
+                text: root.currentLevel > 0 ? "Next Level" : "Start"
+                MouseArea {
+                    anchors.fill: parent
+                    onClicked: {
+                        currentLevel++;
+                        gameScene._reset();
+                        root.currentScene = gameScene;
+                    }
+                }
+            }
 
-            anchors.horizontalCenter: parent.horizontalCenter
-
-            text: "Level completed!"
         }
     }
 
     Scene {
         id: gameOverScene
-
         anchors.fill: parent
 
         Rectangle {
@@ -48,29 +65,42 @@ Game {
             anchors.fill: parent
         }
 
-        Text {
-            id: gameOverText
+        Column {
+            Text {
+                id: gameOverText
 
-            color: "white"
+                color: "white"
 
-            font.family: dPuntillasFont.name
-            font.pointSize: root.bigFontSize
+                font.family: dPuntillasFont.name
+                font.pointSize: root.bigFontSize
 
-            anchors.horizontalCenter: parent.horizontalCenter
+                anchors.horizontalCenter: parent.horizontalCenter
 
-            text: "Game over!"
+                text: "Game over!"
+            }
+
+            Text {
+                color: "white"
+
+                font.family: dPuntillasFont.name
+                font.pointSize: root.bigFontSize
+
+                anchors.horizontalCenter: parent.horizontalCenter
+
+                text: "Game over!"
+            }
         }
     }
 
  
     Scene {
         id: gameScene
+        anchors.fill: parent
 
         focus: true
 
         debug: false
 
-        anchors.fill: parent
 
         gravity: Qt.point(0, 0)
 
@@ -108,11 +138,11 @@ Game {
             var entityA = contact.fixtureA.entity
             var entityB = contact.fixtureB.entity
 
-            if (entityA.objectName == "asteroid" || entityB.objectName == "asteroid") {
+            if (entityA.objectName === "asteroid" || entityB.objectName === "asteroid") {
                 var asteroidObject
-                if (entityA.objectName == "bullet" || entityB.objectName == "bullet") {
+                if (entityA.objectName === "bullet" || entityB.objectName === "bullet") {
                     var bulletObject;
-                    if (entityA.objectName == "bullet") {
+                    if (entityA.objectName === "bullet") {
                         asteroidObject = entityB;
                         bulletObject = entityA;
                     } else {
@@ -199,7 +229,7 @@ Game {
             Entity {
                 id: bullet
 
-                property variant center: Qt.point(x + width / 2, y + height / 2)
+                property point center: Qt.point(x + width / 2, y + height / 2)
 
                 objectName: "bullet"
 
@@ -247,7 +277,7 @@ Game {
             height: shipSprite.height
             x: gameScene.width / 2.0 - ship.width / 2.0
             y: gameScene.height / 2.0 - ship.height / 2.0
-            property variant center: Qt.point(x + width / 2, y + height / 2)
+            property point center: Qt.point(x + width / 2, y + height / 2)
 
             entityType: Bacon2D.DynamicType
 
@@ -361,7 +391,7 @@ Game {
             return rotatedPoint;
         }
 
-        Component.onCompleted: {
+        function _reset() {
             var asteroidObject;
 
             for (var i = 0; i < gameScene.numberOfAsteroids; i++) {
