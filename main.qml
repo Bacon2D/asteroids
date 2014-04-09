@@ -5,7 +5,7 @@ Game {
     id: root
 
     property int currentLevel: 0
-    property int bigFontSize: root.width / 20.0
+    property int bigFontSize: root.width / 15.0
 
     width: 800
     height: 600
@@ -106,10 +106,10 @@ Game {
 
         property int numberOfAsteroids: 3 + Math.floor(root.currentLevel * 0.5)
         property int totalAsteroids: 0
-        property bool isUpPressed: false
-        property bool isDownPressed: false
-        property bool isLeftPressed: false
-        property bool isRightPressed: false
+        property bool isUpPressed: pad.isUpPressed
+        property bool isDownPressed: pad.isDownPressed
+        property bool isLeftPressed: pad.isLeftPressed
+        property bool isRightPressed: pad.isRightPressed
 
         Keys.onUpPressed: isUpPressed = true
         Keys.onDownPressed: isDownPressed = true
@@ -302,7 +302,6 @@ Game {
 
             Sprite {
                 id: shipSprite
-
                 animation: "thrusting"
 
                 animations: [
@@ -382,6 +381,14 @@ Game {
                 onAsteroidCreated: gameScene.totalAsteroids += 1
                 onAsteroidDestroyed: gameScene.totalAsteroids -= 1
             }
+        }
+
+        Pad {
+            id: pad
+            z: 1
+            anchors.bottom: parent.bottom
+            width: parent.width >= 800 ? 200 : parent.width/2
+            onFire: ship.fire()
         }
 
         function rotatePoint(point, angle) {
