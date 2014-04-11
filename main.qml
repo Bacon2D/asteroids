@@ -101,15 +101,14 @@ Game {
 
         debug: false
 
-
         gravity: Qt.point(0, 0)
 
         property int numberOfAsteroids: 3 + Math.floor(root.currentLevel * 0.5)
         property int totalAsteroids: 0
-        property bool isUpPressed: pad.isUpPressed
-        property bool isDownPressed: pad.isDownPressed
-        property bool isLeftPressed: pad.isLeftPressed
-        property bool isRightPressed: pad.isRightPressed
+        property bool isUpPressed: upArea.pressed
+        property bool isDownPressed: downArea.pressed
+        property bool isLeftPressed: false
+        property bool isRightPressed: false
 
         Keys.onUpPressed: isUpPressed = true
         Keys.onDownPressed: isDownPressed = true
@@ -177,6 +176,11 @@ Game {
             anchors.fill: parent
             source: "images/background_stars.png"
             fillMode: Image.Tile
+        }
+
+        MouseArea {
+            anchors.fill: background
+            onClicked: ship.fire();
         }
 
         ScriptBehavior {
@@ -278,8 +282,8 @@ Game {
             x: gameScene.width / 2.0 - ship.width / 2.0
             y: gameScene.height / 2.0 - ship.height / 2.0
             property point center: Qt.point(x + width / 2, y + height / 2)
-
             entityType: Bacon2D.DynamicType
+            rotation: knob.rotation
 
             behavior: shipBehavior
 
@@ -383,12 +387,52 @@ Game {
             }
         }
 
-        Pad {
-            id: pad
+        Knob {
+            id: knob
             z: 1
             anchors.bottom: parent.bottom
             width: parent.width >= 800 ? 200 : parent.width/2
-            onFire: ship.fire()
+            height: width
+        }
+
+        Column {
+            id: thrustArea
+            z: 1
+            anchors {
+                bottom: parent.bottom
+                right: parent.right
+                bottomMargin: 10
+                rightMargin: 10
+            }
+            height: (width * 2) + spacing
+            width: parent.width >= 800 ? 100 : parent.width/3
+            spacing: 10
+            Rectangle {
+                anchors {
+                    left: parent.left
+                    right: parent.right
+                }
+                height: parent.width
+                color: "white"
+                opacity: 0.1
+                MouseArea {
+                    id: upArea
+                    anchors.fill: parent
+                }
+            }
+            Rectangle {
+                anchors {
+                    left: parent.left
+                    right: parent.right
+                }
+                height: parent.width
+                color: "white"
+                opacity: 0.1
+                MouseArea {
+                    id: downArea
+                    anchors.fill: parent
+                }
+            }
         }
 
         function rotatePoint(point, angle) {
